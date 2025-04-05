@@ -13,7 +13,7 @@ class SuspendClear extends Command
      *
      * @var string
      */
-    protected $signature = 'app:suspend-clear';
+    protected $signature = 'user:suspend-clear';
 
     /**
      * The console command description.
