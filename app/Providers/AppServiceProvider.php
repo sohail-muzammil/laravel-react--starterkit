@@ -30,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
             ->get(),
         ]);
 
-        Model::shouldBeStrict($this->app->isProduction());
+        Model::shouldBeStrict(! $this->app->isProduction());
     }
 }
