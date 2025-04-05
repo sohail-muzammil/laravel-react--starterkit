@@ -18,6 +18,6 @@ class OauthProvider extends Model
 
     public function userSocialAccounts()
     {
-        return $this->hasMany(UserSocialAccount::class);
+        return $this->hasMany(UserSocial::class);
     }
 }
