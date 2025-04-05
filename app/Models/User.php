@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -52,7 +53,67 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<UserSocial>
      */
-    public function userSocialAccounts () {
+    public function userSocialAccounts()
+    {
         return $this->hasMany(UserSocial::class);
+    }
+
+
+    /**
+     * Suspend the user for a specific period or indefinitely
+     * 
+     * @param Carbon|null $until Optional suspension end date (null for indefinite)
+     */
+    public function suspend(Carbon $until = null)
+    {
+        $this->update([
+            'suspended_at' => Carbon::now(),
+            'suspended_until' => $until,
+        ]);
+    }
+
+    /**
+     * Unsuspend the user (clear both suspension timestamps)
+     */
+    public function unsuspend()
+    {
+        $this->update([
+            'suspended_at' => null,
+            'suspended_until' => null,
+        ]);
+    }
+
+    /**
+     * Check if user is currently suspended
+     */
+    public function isSuspended(): bool
+    {
+        // Indefinite suspension
+        if ($this->suspended_at && is_null($this->suspended_until)) {
+            return true;
+        }
+
+        // Temporary suspension check
+        if ($this->suspended_until) {
+            return Carbon::now()->lt($this->suspended_until);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the remaining suspension duration in human format
+     */
+    public function suspensionRemaining(): ?string
+    {
+        if (!$this->isSuspended()) {
+            return null;
+        }
+
+        if ($this->suspended_until) {
+            return Carbon::now()->diffForHumans($this->suspended_until, true);
+        }
+
+        return 'indefinite';
     }
 }

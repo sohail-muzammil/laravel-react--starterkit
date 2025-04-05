@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->timestamp('suspended_at')->nullable();
+            $table->timestamp('suspended_until')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
