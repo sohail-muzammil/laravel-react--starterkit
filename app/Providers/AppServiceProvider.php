@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 use Inertia\Inertia;
@@ -28,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
             ->orderBy('name')
             ->get(),
         ]);
+
+        Model::shouldBeStrict($this->app->isProduction());
     }
 }
