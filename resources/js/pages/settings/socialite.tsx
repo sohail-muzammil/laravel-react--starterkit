@@ -40,7 +40,7 @@ const SocialiteSettings: React.FC<Props> = ({ socialAccounts }) => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {providers.map((provider: any, index: number) => (
+                                {providers.map((provider: object, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell className="flex items-center gap-2 font-medium capitalize">
                                             <span dangerouslySetInnerHTML={{ __html: provider.icon }} className="mr-2"></span>
