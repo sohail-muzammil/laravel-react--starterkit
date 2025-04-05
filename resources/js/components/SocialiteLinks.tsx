@@ -13,7 +13,7 @@ const SocialiteLinks: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                {providers.map((provider: any) => (
+                {providers.map((provider: object) => (
                     <a
                         key={provider.name}
                         href={route('auth.socialite.redirect', provider.name)}
