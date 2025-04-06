@@ -6,6 +6,12 @@ use App\Http\Controllers\Settings\SocialiteController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard');
+    })->name('dashboard');
+});
+
 Route::middleware('auth')->group(function () {
     Route::redirect('settings', 'settings/profile');
 
@@ -22,3 +28,5 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('settings/appearance');
     })->name('appearance');
 });
+
+require __DIR__.'/user-auth.php';
