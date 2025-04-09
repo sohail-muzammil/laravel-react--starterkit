@@ -8,3 +8,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('user:suspend-clear')->hourly();
+Schedule::command('admin:suspend-clear')->hourly();
