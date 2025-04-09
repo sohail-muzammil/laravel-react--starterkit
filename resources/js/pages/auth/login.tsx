@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
-import SocialiteLinks from '@/components/SocialiteLinks';
+import SocialiteLinks from '@/components/app/SocialiteLinks';
 
 type LoginForm = {
     email: string;
