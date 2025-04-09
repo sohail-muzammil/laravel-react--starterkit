@@ -12,19 +12,23 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::redirect('settings', 'settings/profile');
+Route::middleware('auth')->prefix('settings')->group(function () {
+    Route::redirect('/', 'settings/profile');
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('profile', 'edit')->name('profile.edit');
+        Route::patch('profile', 'update')->name('profile.update');
+        Route::delete('profile', 'destroy')->name('profile.destroy');
+    });
 
-    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
+    Route::controller(PasswordController::class)->group(function () {
+        Route::get('password', 'edit')->name('password.edit');
+        Route::put('password', 'update')->name('password.update');
+    });
 
-    Route::get('settings/socialite', [SocialiteController::class, 'edit'])->name('socialite.edit');
+    Route::get('socialite', [SocialiteController::class, 'edit'])->name('socialite.edit');
 
-    Route::get('settings/appearance', function () {
+    Route::get('appearance', function () {
         return Inertia::render('settings/appearance');
     })->name('appearance');
 });

@@ -1,6 +1,4 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import React from 'react';
-
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
