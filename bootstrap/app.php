@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\RedirectIfNotAdmin;
 use App\Http\Middleware\CheckSuspended;
 use App\Http\Middleware\CheckAdminSuspended;
 use Illuminate\Foundation\Application;
@@ -26,7 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'admin' => RedirectIfNotAdmin::class,
             'suspended' => CheckSuspended::class,
             'admin.suspended' => CheckAdminSuspended::class,
         ]);
