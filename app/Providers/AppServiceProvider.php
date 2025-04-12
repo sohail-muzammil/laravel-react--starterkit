@@ -25,7 +25,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureSocialite();
 
-        $providers = config('socialite.providers');
+        $providers = collect(config('socialite.providers'))
+            ->filter(fn($provider) => $provider['enabled'] ?? false)
+            ->toArray();
         Inertia::share('socialite_providers', $providers);
 
         Model::shouldBeStrict(! $this->app->isProduction());
