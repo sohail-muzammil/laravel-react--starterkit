@@ -19,8 +19,8 @@ class UserSocialController extends Controller
 {
     public function redirect(string $providerName): RedirectResponse
     {
-        return Inertia::location(
-            Socialite::driver($providerName)->stateless()->redirect()->getTargetUrl()
+        return redirect()->away(
+            Socialite::driver($providerName)->redirect()->getTargetUrl()
         );
     }
 
@@ -29,12 +29,10 @@ class UserSocialController extends Controller
         try {
             $socialiteUser = Socialite::driver($providerName)->stateless()->user();
 
-            $oauthProviderId = OauthProvider::where('name', $providerName)->value('id');
-
             if (Auth::check()) {
                 try {
-                    $this->connectSocialAccount(Auth::user(), $socialiteUser, $oauthProviderId);
-                    return to_route('dashboard')->with('success', ucfirst($oauthProviderId) . ' account connected successfully.');
+                    $this->connectSocialAccount(Auth::user(), $socialiteUser, $providerName);
+                    return to_route('dashboard')->with('success', ucfirst($providerName) . ' account connected successfully.');
                 } catch (Exception $e) {
                     return to_route('dashboard')->withErrors(['error' => $e->getMessage()]);
                 }
@@ -45,15 +43,15 @@ class UserSocialController extends Controller
                 ->first();
 
             if ($user) {
-                if (!$this->hasSocialAccount($user, $oauthProviderId, $socialiteUser->getId())) {
+                if (!$this->hasSocialAccount($user, $providerName, $socialiteUser->getId())) {
                     return to_route('login')->withErrors([
-                        'error' => ucfirst($oauthProviderId) . ' account not connected. Sign up or use another method.'
+                        'error' => ucfirst($providerName) . ' account not connected. Sign up or use another method.'
                     ]);
                 }
 
                 Auth::login($user);
             } else {
-                $userSocialAccount = $this->findOrCreateProviderUser($socialiteUser, $oauthProviderId);
+                $userSocialAccount = $this->findOrCreateProviderUser($socialiteUser, $providerName);
                 Auth::login($userSocialAccount->user);
             }
 
@@ -65,26 +63,26 @@ class UserSocialController extends Controller
         }
     }
 
-    private function connectSocialAccount(User $user, SocialiteUser $socialiteUser, string $oauthProviderId): void
+    private function connectSocialAccount(User $user, SocialiteUser $socialiteUser, string $providerName): void
     {
-        if (UserSocial::where('oauth_provider_id', $oauthProviderId)
+        if (UserSocial::where('provider_name', $providerName)
             ->where('social_id', $socialiteUser->getId())
             ->exists()
         ) {
-            throw new Exception(ucfirst($oauthProviderId) . ' account is already linked to another user.');
+            throw new Exception(ucfirst($providerName) . ' account is already linked to another user.');
         }
 
-        if ($user->userSocialAccounts()->where('oauth_provider_id', $oauthProviderId)->exists()) {
-            throw new Exception(ucfirst($oauthProviderId) . ' account is already connected.');
+        if ($user->userSocialAccounts()->where('provider_name', $providerName)->exists()) {
+            throw new Exception(ucfirst($providerName) . ' account is already connected.');
         }
 
-        $this->createSocialAccount($user, $socialiteUser, $oauthProviderId);
+        $this->createSocialAccount($user, $socialiteUser, $providerName);
     }
 
-    private function createSocialAccount(User $user, SocialiteUser $socialiteUser, string $oauthProviderId): UserSocial
+    private function createSocialAccount(User $user, SocialiteUser $socialiteUser, string $providerName): UserSocial
     {
         return $user->userSocialAccounts()->create([
-            'oauth_provider_id' => $oauthProviderId,
+            'provider_name' => $providerName,
             'social_id' => $socialiteUser->getId(),
             'nickname' => $socialiteUser->getNickname(),
             'name' => $socialiteUser->getName(),
@@ -97,11 +95,11 @@ class UserSocialController extends Controller
         ]);
     }
 
-    private function findOrCreateProviderUser(SocialiteUser $socialiteUser, string $oauthProviderId): UserSocial
+    private function findOrCreateProviderUser(SocialiteUser $socialiteUser, string $providerName): UserSocial
     {
-        return DB::transaction(function () use ($socialiteUser, $oauthProviderId) {
+        return DB::transaction(function () use ($socialiteUser, $providerName) {
             $providerAccount = UserSocial::firstOrNew([
-                'oauth_provider_id' => $oauthProviderId,
+                'provider_name' => $providerName,
                 'social_id' => $socialiteUser->getId(),
             ]);
 
@@ -117,28 +115,28 @@ class UserSocialController extends Controller
                 ]
             );
 
-            return $this->createSocialAccount($user, $socialiteUser, $oauthProviderId);
+            return $this->createSocialAccount($user, $socialiteUser, $providerName);
         });
     }
 
-    public function disconnect(string $oauthProviderId): RedirectResponse
+    public function disconnect(string $providerName): RedirectResponse
     {
         try {
             $socialAccount = Auth::user()->userSocialAccounts()
-                ->where('oauth_provider_id', $oauthProviderId)
+                ->where('provider_name', $providerName)
                 ->firstOrFail();
 
             $socialAccount->delete();
-            return to_route('dashboard')->with('success', ucfirst($oauthProviderId) . ' account disconnected.');
+            return to_route('dashboard')->with('success', ucfirst($providerName) . ' account disconnected.');
         } catch (Exception $e) {
             return to_route('dashboard')->withErrors(['error' => 'Disconnection failed. Try again.']);
         }
     }
 
-    private function hasSocialAccount(User $user, string $oauthProviderId, string $socialId): bool
+    private function hasSocialAccount(User $user, string $providerName, string $socialId): bool
     {
         return $user->userSocialAccounts
-            ->where('oauth_provider_id', $oauthProviderId)
+            ->where('provider_name', $providerName)
             ->where('social_id', $socialId)
             ->isNotEmpty();
     }

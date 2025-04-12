@@ -16,7 +16,7 @@ class SocialiteController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('settings/socialite', [
-            'socialAccounts' => $request->user()->userSocialAccounts->pluck('oauth_provider_id'),
+            'socialAccounts' => $request->user()->userSocialAccounts->pluck('provider_name'),
         ]);
     }
 }

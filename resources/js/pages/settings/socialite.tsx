@@ -1,17 +1,23 @@
-import { Head, Link, usePage } from '@inertiajs/react';
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 interface Props {
     socialAccounts?: number[];
 }
 
 const SocialiteSettings: React.FC<Props> = ({ socialAccounts }) => {
-    const page = usePage();
-    const providers = page.props.oauth_providers || [];
+    const { props } = usePage();
+    const providers = props.socialite_providers || {};
+
+    // Convert the providers object into an array of { name, icon, ... }
+    const providerArray = Object.entries(providers).map(([name, config]) => ({
+        name,
+        ...config,
+    }));
 
     const breadcrumbs = [
         {
@@ -38,17 +44,17 @@ const SocialiteSettings: React.FC<Props> = ({ socialAccounts }) => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {providers.map((provider: object, index: number) => (
+                                {providerArray.map((provider, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell className="flex items-center gap-2 font-medium capitalize">
                                             <span dangerouslySetInnerHTML={{ __html: provider.icon }} className="mr-2"></span>
                                             <span>{provider.name}</span>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            {socialAccounts && socialAccounts.includes(provider.id) ? (
+                                            {socialAccounts && socialAccounts.includes(provider.name) ? (
                                                 <Button variant="destructive">
                                                     <Link
-                                                        href={route('auth.socialite.disconnect', { driver: provider.id })}
+                                                        href={route('auth.socialite.disconnect', { driver: provider.name })}
                                                         method="DELETE"
                                                         as="button"
                                                         tabIndex={6}
@@ -58,9 +64,9 @@ const SocialiteSettings: React.FC<Props> = ({ socialAccounts }) => {
                                                 </Button>
                                             ) : (
                                                 <Button>
-                                                    <Link href={route('auth.socialite.redirect', provider.name)} tabIndex={6}>
+                                                    <a href={route('auth.socialite.redirect', provider.name)} tabIndex={6}>
                                                         Connect
-                                                    </Link>
+                                                    </a>
                                                 </Button>
                                             )}
                                         </TableCell>

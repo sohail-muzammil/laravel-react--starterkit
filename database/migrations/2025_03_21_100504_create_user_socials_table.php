@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_socials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('oauth_provider_id');
+            $table->string('provider_name');
 
             $table->string('social_id');
             $table->string('nickname')->nullable();
@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->unique(['user_id', 'oauth_provider_id']);
+            $table->unique(['user_id', 'provider_name']);
         });
     }
 

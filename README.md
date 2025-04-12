@@ -9,14 +9,13 @@ This project is a Laravel 12 application integrated with React.js using the new 
 - **Laravel 12**: Built with the latest version of Laravel.
 - **React Starter Kit**: Integrated with React.js for a modern frontend experience.
 - **Laravel Socialite**: Simplifies OAuth authentication with social providers.
-- **Social Auth Management**: The `oauth_providers` table is used to manage social authentication providers. It includes the following columns:
+- **Social Auth Management**: The `socialite_providers` table is used to manage social authentication providers. It includes the following columns:
   - `name`
   - `icon`
   - `client_id`
   - `client_secret`
   - `enabled`
   
-  Use the `OauthProvidersSeeder` to easily add data for social providers.
 
 ## Installation
 

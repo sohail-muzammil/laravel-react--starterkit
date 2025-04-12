@@ -13,7 +13,7 @@ class UserSocial extends Model
 
     protected $fillable = [
         'user_id',
-        'oauth_provider_id',
+        'provider_name',
         'social_id',
         'nickname',
         'name',

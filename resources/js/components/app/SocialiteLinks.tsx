@@ -1,19 +1,26 @@
 import React from 'react';
 import { usePage } from '@inertiajs/react';
-import { Console } from 'console';
 
 const SocialiteLinks: React.FC = () => {
     const { props } = usePage();
-    const providers = props.oauth_providers || [];
+    const providers = props.socialite_providers || {};
+    
+    // Convert the providers object into an array of { name, icon, ... }
+    const providerArray = Object.entries(providers).map(([name, config]) => ({
+        name,
+        ...config,
+    }));
 
     return (
         <>
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-background px-2 text-muted-foreground"> Or continue with </span>
+                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                    Or continue with
+                </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                {providers.map((provider: object) => (
+                {providerArray.map((provider) => (
                     <a
                         key={provider.name}
                         href={route('auth.socialite.redirect', provider.name)}
