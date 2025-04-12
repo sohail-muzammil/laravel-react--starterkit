@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use Exception;
 use App\Models\User;
-use Inertia\Inertia;
-use App\Models\OauthProvider;
 use App\Models\UserSocial;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
