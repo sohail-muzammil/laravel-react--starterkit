@@ -50,9 +50,9 @@ export default function UserIndex() {
                                     <TableRow key={user.id} className="hover:bg-gray-50">
                                         <TableCell className="font-medium capitalize">{user.name}</TableCell>
                                         <TableCell className="space-x-2 text-right">
-                                            <Button variant="outline" size="sm" asChild>
+                                            {/* <Button variant="outline" size="sm" asChild>
                                                 <Link href={route('admin.users.edit', user.id)}>Edit</Link>
-                                            </Button>
+                                            </Button> */}
                                             <Button variant="destructive" size="sm" asChild>
                                                 <Link href={route('admin.users.destroy', user.id)} method="delete" as="button" preserveScroll>
                                                     Remove
