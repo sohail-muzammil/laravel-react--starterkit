@@ -9,13 +9,7 @@ This project is a Laravel 12 application integrated with React.js using the new 
 - **Laravel 12**: Built with the latest version of Laravel.
 - **React Starter Kit**: Integrated with React.js for a modern frontend experience.
 - **Laravel Socialite**: Simplifies OAuth authentication with social providers.
-- **Social Auth Management**: The `socialite_providers` table is used to manage social authentication providers. It includes the following columns:
-  - `name`
-  - `icon`
-  - `client_id`
-  - `client_secret`
-  - `enabled`
-  
+- **Admin Dashboard**: URL to Access Admin Dashboard is /admin/login
 
 ## Installation
 
@@ -24,8 +18,8 @@ Follow these steps to set up the project locally:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/sohail-muzammil/laravel-react-socialite-starter.git
-   cd laravel-react-socialite-starter
+   git clone https://github.com/sohail-muzammil/laravel-react--starterkit.git
+   cd laravel-react--starterkit
    ```
 
 2. **Install dependencies**:
